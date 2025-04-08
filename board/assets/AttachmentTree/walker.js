@@ -6,6 +6,7 @@ function walkerType(params) {
 }
 
 walkerType.prototype.viewbox='-100000 -100000 200000 200000'
+walkerType.prototype.pointDistance=1000
 
 walkerType.prototype.import=function (root) {
     this.loadvars(root.define)
@@ -138,26 +139,55 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
             var sstr=`<circle stroke="none" pointer-events="none" cy="${this.y1/2+this.y2/2}" cx="${this.x1/2+this.x2/2}" r="3000" fill="#000"></circle>`
             break;
         case 'arc':
-            var pts=[
-                [this.x1,this.y2],
-                [this.x2,this.y2],
-                [this.x2,this.y1],
-                [this.x1,this.y1],
-                [this.x1,this.y2],
-                [this.x2,this.y2],
-                [this.x2,this.y1],
-                [this.x1,this.y1],
-                [this.x1,this.y2],
-                [this.x2,this.y2],
-                [this.x2,this.y1],
-                [this.x1,this.y1],
-            ]
-            var ptsi=({"ul": 0, "ur": 1,"dr": 2,"dl":3}[shape.side])
-            pts=pts.splice(ptsi+1,4).map(v=>'L'+v.join(','))
+            function arc(point0, r, n, angle0, angle1) {
+                const angles = [];
+                for (let x = 0; x < n; x++) {
+                    const angle = angle0 + (x / (n - 1)) * (angle1 - angle0);
+                    angles.push(angle);
+                }
+                return angles.map(angle => ({
+                    x: point0.x + r * Math.cos(angle * Math.PI / 180),
+                    y: point0.y + r * Math.sin(angle * Math.PI / 180)
+                }));
+            }
+            function generateArcShape(shape, x1, y1, x2, y2, pointDistance) {
+                let aa, bb, wbigger;
+                if (width < height) {
+                    aa = width;
+                    bb = height;
+                    wbigger = false;
+                } else {
+                    aa = height;
+                    bb = width;
+                    wbigger = true;
+                }
+                const radius = (Math.pow(bb, 2) / aa + aa) / 2;
+                const angleDeg = Math.atan2(bb, radius - aa) * 180 / Math.PI;
+                const sideMap = { ul: 0, ur: 1, dr: 2, dl: 3 };
+                const ptsi = sideMap[shape.side];
+                const cases = {
+                    '0,true': [ {x: x1, y: y2}, {x: x1, y: y1 + radius}, -90, -90 + angleDeg ],
+                    '1,true': [ {x: x2, y: y2}, {x: x2, y: y1 + radius}, -90, -90 - angleDeg ],
+                    '2,true': [ {x: x2, y: y1}, {x: x2, y: y2 - radius}, 90, 90 + angleDeg ],
+                    '3,true': [ {x: x1, y: y1}, {x: x1, y: y2 - radius}, 90, 90 - angleDeg ],
+                    '0,false': [ {x: x1, y: y2}, {x: x2 - radius, y: y2}, 0, 0 - angleDeg ],
+                    '1,false': [ {x: x2, y: y2}, {x: x1 + radius, y: y2}, 180, 180 + angleDeg ],
+                    '2,false': [ {x: x2, y: y1}, {x: x1 + radius, y: y1}, 180, 180 - angleDeg ],
+                    '3,false': [ {x: x1, y: y1}, {x: x2 - radius, y: y1}, 0, 0 + angleDeg ]
+                };
+                const key = `${ptsi},${wbigger}`;
+                const [ptconner, ptcenter, angle0, angle1] = cases[key];
+                const n = Math.ceil((radius * angleDeg * Math.PI / 180) / pointDistance) + 2;
+                console.log(n)
+                const arcPoints = arc(ptcenter, radius, n, angle0, angle1);
+                arcPoints.push(ptconner);
+                return arcPoints;
+            }
+            var pts=generateArcShape(shape, this.x1, this.y1, this.x2, this.y2, this.pointDistance)
+            pts=pts.map(v=>'L'+v.x+','+v.y)
             pts[0]=' '+pts[0].slice(1)
-            pts[1]='Q'+pts[1].slice(1)
-            pts[2]=' '+pts[2].slice(1)
             var sstr=`<path stroke="none" d="M${pts.join('')}Z" />`
+            console.log(pts,sstr,this)
             break;
         case 'quadrilateral':
             var sstr=`<path stroke="none" d="M${this.x1+this.eval(shape.ul)},${this.y2}l${width-this.eval(shape.ul)},${-this.eval(shape.ur)}l${-this.eval(shape.dr)},${-height+this.eval(shape.ur)}l${-width+this.eval(shape.dr)},${this.eval(shape.dl)}Z" />`

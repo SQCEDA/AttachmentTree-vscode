@@ -11,12 +11,26 @@
     <style>
       body {
         background-color: white;
+        padding: 0;
+      }
+      span.blocklyTreeLabel{
+        color:black;
       }
     </style>
 </head>
 
 <body>
 
+  <p>
+    <button onclick="window.trigger([0,lastvalue[0]+' ']);window.buildBlocks()">import</button>
+    <input id="svgviewbox" type="text" style="width: 300px;" value="-100000 -100000 200000 200000">
+    <button onclick="window.svgsizefunc=()=>0;walker.viewbox=svgviewbox.value;window.buildBlocks()">fixed viewbox</button>
+    <button onclick='window.svgsizefunc=autoresizesvg;autoresizesvg()'>auto viewbox</button>
+    <span class='pc0'>0</span><span
+        class='pc1'>1</span><span class='pc2'>2</span><span class='pc3'>3</span><span class='pc4'>4</span><span
+        class='pc5'>5</span><span class='pc6'>6</span><span class='pc7'>7</span><span class='pc8'>8</span><span
+        class='pc9'>9</span>
+  </p>
     <div style="clear: both;"></div>
     <div style="float: left;">
         <div id="blocklyDiv" style="height: 550px; width: 450px;"></div>
@@ -25,27 +39,18 @@
         <div id="svgoutput" style="transform: rotateX(180deg);"></div>
     </div>
     <div style="clear: both;"></div>
-    <p>Arcs are not real arc in preview. (Quadratic Bézier curve) <span class='pc0'>0</span><span
-            class='pc1'>1</span><span class='pc2'>2</span><span class='pc3'>3</span><span class='pc4'>4</span><span
-            class='pc5'>5</span><span class='pc6'>6</span><span class='pc7'>7</span><span class='pc8'>8</span><span
-            class='pc9'>9</span>
-    </p>
-    <p>
-        <button onclick="window.trigger([0,lastvalue[0]+' ']);window.buildBlocks()">import</button>
-        <input id="svgviewbox" type="text" style="width: 300px;" value="-100000 -100000 200000 200000">
-        <button onclick="window.svgsizefunc=()=>0;walker.viewbox=svgviewbox.value;window.buildBlocks()">fixed viewbox</button>
-        <button onclick='window.svgsizefunc=autoresizesvg;autoresizesvg()'>auto viewbox</button>
-    </p>
     <textarea name="blocklyinput" id="blocklyinput" cols="60" rows="27" spellcheck="false">
     </textarea>
 
     <script>
       globalThis.blocklymedia='./assets/antlr-blockly/media/'
+      globalThis.vscodenoce='ToBeReplacedByRandomToken'
     </script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/Converter.bundle.min.js"></script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/AttachmentTree/walker.js"></script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/AttachmentTree/page.js"></script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/AttachmentTree/AttachmentTree.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/connect.js"></script>
 </body>
 
 </html>
