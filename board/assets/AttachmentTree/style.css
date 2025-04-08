@@ -1,0 +1,38 @@
+#blocklyDiv .blocklyToolboxDiv {
+    width: 30px;
+}
+
+#svgoutput path{
+    fill: rgb(153, 153, 153);
+    /* fill="#fce49d" */
+    fill-opacity: 0.4;
+}
+#svgoutput .c0 path{
+    fill-opacity: 0.2;
+}
+
+
+#svgoutput .c0 path{fill: rgb(153, 153, 153);}
+#svgoutput .c1 path{fill: rgb(0, 75, 128);}
+#svgoutput .c2 path{fill: rgb(0, 128, 128);}
+#svgoutput .c3 path{fill: rgb(128, 0, 58);}
+#svgoutput .c4 path{fill: rgb(0, 2, 128);}
+#svgoutput .c5 path{fill: rgb(128, 0, 115);}
+#svgoutput .c6 path{fill: rgb(0, 128, 23);}
+#svgoutput .c7 path{fill: rgb(128, 28, 0);}
+#svgoutput .c8 path{fill: rgb(128, 60, 0);}
+#svgoutput .c9 path{fill: rgb(66, 128, 0);}
+.pc0{background-color: rgb(153, 153, 153);}
+.pc1{background-color: rgb(0, 75, 128);}
+.pc2{background-color: rgb(0, 128, 128);}
+.pc3{background-color: rgb(128, 0, 58);}
+.pc4{background-color: rgb(0, 2, 128);}
+.pc5{background-color: rgb(128, 0, 115);}
+.pc6{background-color: rgb(0, 128, 23);}
+.pc7{background-color: rgb(128, 28, 0);}
+.pc8{background-color: rgb(128, 60, 0);}
+.pc9{background-color: rgb(66, 128, 0);}
+
+#svgoutput path:hover{
+    fill:red;
+}

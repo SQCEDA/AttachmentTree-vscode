@@ -1,0 +1,7 @@
+*\[abc\]*
+.vscode
+src/.antlr
+.antlr
+node_modules/*
+package-lock.json
+src/gen/*

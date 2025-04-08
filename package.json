@@ -1,0 +1,67 @@
+{
+	"name": "AttachmentTree-vscode",
+	"displayName": "AttachmentTree-vscode",
+	"description": "AttachmentTree-vscode",
+	"version": "0.1.0",
+	"publisher": "zhaouv",
+	"license": "MIT",
+	"repository": {
+		"url": "https://github.com/SQCEDA/AttachmentTree-vscode.git"
+	},
+	"bugs": {
+		"url": "https://github.com/SQCEDA/AttachmentTree-vscode/issues"
+	},
+	"engines": {
+		"vscode": "^1.47.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"keywords": [
+		"gdsii",
+		"preview"
+	],
+	"activationEvents": [
+	],
+	"main": "./src/extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "AttachmentTree.editCurrentLineAsAttachmentTree",
+				"title": "AttachmentTree",
+				"category": "AttachmentTree"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "AttachmentTree.editCurrentLineAsAttachmentTree",
+					"when": "editorFocus",
+					"group": "7_modification"
+				}
+			]
+		},
+		"configuration": {
+			"type": "object",
+			"title": "AttachmentTree",
+			"properties": {
+				"AttachmentTree.auto-folding": {
+					"type": "boolean",
+					"default": true,
+					"description": "use auto-folding moding, wrap inline svg with region"
+				},
+				"AttachmentTree.directory": {
+					"type": "string",
+					"default": "",
+					"description": "SVG saving directory"
+				}
+			}
+		}
+	},
+	"scripts": {},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/vscode": "^1.47.0",
+		"@types/node": "^12.12.0"
+	}
+}
