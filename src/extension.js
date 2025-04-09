@@ -2,9 +2,6 @@ const vscode = require("vscode");
 const path = require("path");
 const fs = require("fs");
 
-const foldStart = '<!-- #region drawinline -->'
-const foldEnd = '<!-- #endregion -->'
-
 function getRandomString() {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -14,29 +11,10 @@ function getRandomString() {
   return text;
 }
 const getNonce = getRandomString;
-const generateSVGName = getRandomString;
-
-function foldingMod() {
-  return vscode.workspace.getConfiguration('AttachmentTree')['auto-folding']
-}
 
 function loadWebviewFiles(root) {
   let main = fs.readFileSync(path.join(root, 'board', 'index.html'), { encoding: 'utf8' })
   return main.replace(/ToBeReplacedByRandomToken/g, getNonce())
-  main = main.replace(/<[^\n]*"\.\/assets\/[^\n]*>/g, s => {
-    let m = /"\.\/assets\/(.*?\.)(.*?)"/.exec(s)
-    let content = fs.readFileSync(path.join(root, 'board', 'assets', m[1] + m[2]), { encoding: 'utf8' })
-    switch (m[2]) {
-      case 'css':
-        return '<style>\n' + content + '\n</style>'
-      case 'js':
-        return '<script type="module" crossorigin nonce="ToBeReplacedByRandomToken">\n' + content + '\n</script>'
-      default:
-        return s
-    }
-  })
-  main = main.replace(/ToBeReplacedByRandomToken/g, getNonce())
-  return main
 }
 const webviewContent = loadWebviewFiles(path.join(__dirname, '..'));
 
@@ -51,7 +29,6 @@ function activate(context) {
   /** @type {vscode.TextEditor | undefined} */
   let currentEditor = undefined;
   let currentLine = 0;
-  let currentInFolding = false;
   let currentText = "";
   let updateHandle = undefined;
 
@@ -82,18 +59,13 @@ function activate(context) {
             pushCustom()
             return;
           case 'editCurrentLine':
-            setEditorText(message.text, message.control, message.file);
-            return;
-          case 'readSVGFile':
-            currentPanel.webview.postMessage({ command: 'readSVGFile', content: readFile(message.file) });
+            setEditorText(message.text, message.file);
             return;
         }
       },
       undefined,
       context.subscriptions
     );
-
-    realTimeCurrentEditorUpdate()
 
     currentPanel.onDidDispose(
       () => {
@@ -126,18 +98,8 @@ function activate(context) {
     currentLine_ = currentEditor_.selection.active.line
 
     let text = currentEditor_.document.getText(new vscode.Range(currentLine_, 0, currentLine_ + 1, 0))
-    currentInFolding = false
-    if (text.startsWith(foldStart)){
-      currentLine_ += 1
-      currentInFolding = true
-      text = currentEditor_.document.getText(new vscode.Range(currentLine_, 0, currentLine_ + 1, 0))
-    }
-    if (text.startsWith(foldEnd)){
-      currentLine_ -= 1
-      currentInFolding = true
-      text = currentEditor_.document.getText(new vscode.Range(currentLine_, 0, currentLine_ + 1, 0))
-    }
     currentText = text
+    // console.log(currentEditor_.document.fileName) // /home/zhaouv/e/git/github/vscode-markdown-everywhere/highlightDemo/test.m
     return { text, currentEditor_, currentLine_ }
   }
 
@@ -146,97 +108,51 @@ function activate(context) {
     if (typeof text === 'string' && currentPanel) {
       currentEditor = currentEditor_
       currentLine = currentLine_
-      currentPanel.webview.postMessage({ command: 'currentLine', content: text });
-    }
-  }
-
-  let updateCheckStrings = ['', '']
-  function resetCheckStrings(str) {
-    updateCheckStrings[0] = updateCheckStrings[1] = str
-  }
-  function realTimeCurrentEditorUpdate() {
-    updateHandle = setInterval(() => {
-      let { text, currentEditor_, currentLine_ } = getEditorText(false)
-      if (typeof text === 'string' && currentPanel) {
-        let topush = false
-        if (updateCheckStrings[0] !== updateCheckStrings[1] && text === updateCheckStrings[0]) {
-          topush = true
-        }
-        updateCheckStrings[1] = updateCheckStrings[0]
-        updateCheckStrings[0] = text
-        currentEditor = currentEditor_
-        currentLine = currentLine_
-        if (topush) {
-          currentPanel.webview.postMessage({ command: 'currentLine', content: text });
+      let filename = currentEditor.document.fileName
+      if(!filename.endsWith('.at.json')){
+        let match = /['"][^'"]+\.at\.json['"]/.exec(text)
+        if(match){
+          filename=eval(match[0])
+        }else{
+          vscode.window.showErrorMessage('No valid filename as .at.json');
+          return;
         }
       }
-    }, 100)
+      let filecontent = readFile(filename);
+      if (filecontent==null) {
+        filecontent=''
+        vscode.window.showInformationMessage('file not exist, will create when edit')
+      }
+      currentPanel.webview.postMessage({ command: 'currentLine', content: {name:filename,value:filecontent} });
+    }
   }
 
   // write text to filename
   function writeFile(text, filename) {
-    let settings = vscode.workspace.getConfiguration('AttachmentTree');
-    let dir = path.join(vscode.workspace.rootPath, settings.directory);
+    console.log('writeFile:',filename)
+    // let dir = path.join(vscode.workspace.rootPath, settings.directory);
+    let dir = path.dirname(filename);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
-    fs.writeFileSync(path.join(dir, filename), text, { encoding: 'utf8' });
+    fs.writeFileSync(filename, text, { encoding: 'utf8' });
   }
 
   // return contents of filename
   function readFile(filename) {
-    return fs.readFileSync(path.join(vscode.workspace.rootPath, filename), { encoding: 'utf8' });
+    if (!fs.existsSync(filename)) return null;
+    return fs.readFileSync(filename, { encoding: 'utf8' });
   }
 
-  function setEditorText(text, control, file) {
-    let settings = vscode.workspace.getConfiguration('AttachmentTree');
+  function setEditorText(text, file) {
     if (file) {
-      let filename = `${generateSVGName()}.svg`
-      let alt = "";
-
-      // reuse existing alt and filename, if available
-      if (match = currentText.match(/!\[(.*)\]\((.*\.svg)\)/)) {
-        alt = match[1]
-        filename = match[2].replace(/^.*[\\\/]/, '')
-      }
-
-      writeFile(text, filename)
-      text = `![${alt}](${settings.directory}/${filename})`
-      if (settings.directory=='') {
-        text = `![${alt}](${filename})`
-      }
-    } else if (currentInFolding == false && foldingMod()) {
-      text = foldStart +'\n'+ text +'\n'+ foldEnd
-      currentInFolding = true
+      writeFile(text, file)
     }
 
-    if (!currentEditor || currentEditor.document.isClosed) {
-      vscode.window.showErrorMessage('The text editor has been closed');
-      return;
-    }
-    let p = vscode.window.showTextDocument(currentEditor.document, {
-      viewColumn: currentEditor.viewColumn,
-      selection: new vscode.Range(currentLine, 0, currentLine, 0)
-    })
-      .then((editor) => editor.edit(edit => {
-        let lf = '\n'
-        edit.replace(new vscode.Range(currentLine, 0, currentLine + 1, 0), text + lf);
-        resetCheckStrings(text.split('\n')[0] + '\n')
-      }))
-    if (control !== 0) {
-      p = p
-        .then(() => vscode.window.showTextDocument(currentEditor.document, {
-          viewColumn: currentEditor.viewColumn,
-          selection: new vscode.Range(currentLine + control, 0, currentLine + control, 0)
-        })) // the next line somehow not working, so use this line
-        // .then(() => currentEditor.revealRange(
-        //   new vscode.Range(currentLine + control, 0, currentLine + control, 0)
-        // )) 
-        .then(() => {
-          pushCurrentLine()
-        })
-    }
-    if(foldingMod())p=p.then(()=>vscode.commands.executeCommand('editor.foldAllMarkerRegions'))
+    // if (!currentEditor || currentEditor.document.isClosed) {
+    //   vscode.window.showErrorMessage('The text editor has been closed');
+    //   return;
+    // }
   }
 
   function pushCustom() {
@@ -248,16 +164,10 @@ function activate(context) {
     vscode.commands.registerCommand('AttachmentTree.editCurrentLineAsAttachmentTree', () => {
       if (currentPanel) {
         showPanel()
-        pushCurrentLine()
-        if(foldingMod())vscode.commands.executeCommand('editor.foldAllMarkerRegions')
       } else {
-        // vscode.commands.executeCommand('workbench.action.editorLayoutTwoRowsRight')
-        //   .then(() => {
-            createNewPanel()
-            pushCurrentLine()
-            if(foldingMod())vscode.commands.executeCommand('editor.foldAllMarkerRegions')
-          // })
+        createNewPanel()
       }
+      pushCurrentLine()
     })
   );
 

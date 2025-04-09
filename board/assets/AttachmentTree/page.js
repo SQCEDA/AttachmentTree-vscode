@@ -1,9 +1,9 @@
-if (localStorage.getItem('AttachmentTree')!=null) {
-    try {
-        document.querySelector('#blocklyinput').value=localStorage.getItem('AttachmentTree')
-    } catch (error) {
-    }
-}
+// if (localStorage.getItem('AttachmentTree')!=null) {
+//     try {
+//         document.querySelector('#blocklyinput').value=localStorage.getItem('AttachmentTree')
+//     } catch (error) {
+//     }
+// }
 
 window.buildBlocks=function(params) {
     // console.log('buildBlocks')
@@ -22,10 +22,10 @@ window.trigger = function(params) {
         return
     }
     lastvalue[0]=params[1]
-    try {
-        if(params[1])localStorage.setItem('AttachmentTree',document.querySelector('#blocklyinput').value)
-    } catch (error) {
-    }
+    // try {
+    //     if(params[1])localStorage.setItem('AttachmentTree',document.querySelector('#blocklyinput').value)
+    // } catch (error) {
+    // }
     // console.log(params[1])
     walker.import(eval('('+document.querySelector('#blocklyinput').value+')'));svgoutput.innerHTML=walker.buildsvg();svgsizefunc();listensvg();
 }

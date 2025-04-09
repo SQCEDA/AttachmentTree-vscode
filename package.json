@@ -40,22 +40,6 @@
 					"group": "7_modification"
 				}
 			]
-		},
-		"configuration": {
-			"type": "object",
-			"title": "AttachmentTree",
-			"properties": {
-				"AttachmentTree.auto-folding": {
-					"type": "boolean",
-					"default": true,
-					"description": "use auto-folding moding, wrap inline svg with region"
-				},
-				"AttachmentTree.directory": {
-					"type": "string",
-					"default": "",
-					"description": "SVG saving directory"
-				}
-			}
 		}
 	},
 	"scripts": {},
