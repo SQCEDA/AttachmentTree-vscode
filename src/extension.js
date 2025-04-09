@@ -112,16 +112,30 @@ function activate(context) {
       if(!filename.endsWith('.at.json')){
         let match = /['"][^'"]+\.at\.json['"]/.exec(text)
         if(match){
-          filename=eval(match[0])
+          let matchname=eval(match[0])
+          if (path.isAbsolute(matchname)) {
+            filename=matchname
+          }else{
+            let dir = path.dirname(filename);
+            let trypath=path.join(dir,matchname);
+            if (fs.existsSync(trypath)) {
+              filename=trypath;
+            }else{
+              dir=vscode.workspace.rootPath;
+              trypath=path.join(dir,matchname);
+              if (fs.existsSync(trypath)) filename=trypath;
+            }
+          }
         }else{
           vscode.window.showErrorMessage('No valid filename as .at.json');
           return;
         }
       }
       let filecontent = readFile(filename);
-      if (filecontent==null) {
+      if (filecontent===null) {
         filecontent=''
-        vscode.window.showInformationMessage('file not exist, will create when edit')
+        filename=''
+        vscode.window.showErrorMessage('file not exist')
       }
       currentPanel.webview.postMessage({ command: 'currentLine', content: {name:filename,value:filecontent} });
     }
