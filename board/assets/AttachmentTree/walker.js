@@ -36,6 +36,9 @@ walkerType.prototype.buildsvg=function (params) {
 walkerType.prototype.loadvars=function (defineList) {
     this.vars={}
     defineList.forEach(element => {
+        if (element.type=='variablenone') {
+            return
+        }
         if (element.id in this.vars) {
             return
         } else {
@@ -136,7 +139,7 @@ walkerType.prototype.traversal = function(attachments){
 walkerType.prototype.buildshape = function(shape,width,height,collection){
     switch (shape.type) {
         case 'brush':
-            var sstr=`<circle stroke="none" pointer-events="none" cy="${this.y1/2+this.y2/2}" cx="${this.x1/2+this.x2/2}" r="3000" fill="#000"></circle>`
+            var sstr=`<circle stroke="none" pointer-events="none" cy="${this.y1/2+this.y2/2}" cx="${this.x1/2+this.x2/2}" r="3000" fill="#555"></circle>`
             break;
         case 'arc':
             function arc(point0, r, n, angle0, angle1) {
@@ -178,7 +181,7 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
                 const key = `${ptsi},${wbigger}`;
                 const [ptconner, ptcenter, angle0, angle1] = cases[key];
                 const n = Math.ceil((radius * angleDeg * Math.PI / 180) / pointDistance) + 2;
-                console.log(n)
+                // console.log(n)
                 const arcPoints = arc(ptcenter, radius, n, angle0, angle1);
                 arcPoints.push(ptconner);
                 return arcPoints;
@@ -187,7 +190,7 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
             pts=pts.map(v=>'L'+v.x+','+v.y)
             pts[0]=' '+pts[0].slice(1)
             var sstr=`<path stroke="none" d="M${pts.join('')}Z" />`
-            console.log(pts,sstr,this)
+            // console.log(pts,sstr,this)
             break;
         case 'quadrilateral':
             var sstr=`<path stroke="none" d="M${this.x1+this.eval(shape.ul)},${this.y2}l${width-this.eval(shape.ul)},${-this.eval(shape.ur)}l${-this.eval(shape.dr)},${-height+this.eval(shape.ur)}l${-width+this.eval(shape.dr)},${this.eval(shape.dl)}Z" />`
@@ -219,6 +222,9 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
         default:// 'rectangle'
             var sstr=`<path stroke="none" d="M${this.x1},${this.y2}l${width},0l0,${-height}l${-width},0Z" />`
             break;
+    }
+    if (shape._blockid) {
+        sstr=`<g id="${btoa(shape._blockid).split('=')[0]}" class="svgclickg">${sstr}</g>`
     }
     this.addto(sstr,collection)
 }

@@ -84,7 +84,12 @@ globalThis.clickReturn=function () {
   if (drawAPI.unstable.filename!=='') {
     drawAPI.unstable.editCurrentLine({
       file: drawAPI.unstable.filename,
-      text: document.querySelector('#blocklyinput').value
+      text: JSON.stringify( JSON.parse(document.querySelector('#blocklyinput').value),(k, v) => {
+        if (k === "_blockid") {
+          return undefined;
+        }
+        return v
+      },4)
     })
   }else{
     alert('没有有效的文件名')
