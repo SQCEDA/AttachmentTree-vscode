@@ -224,7 +224,9 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
             break;
     }
     if (shape._blockid) {
-        sstr=`<g id="${btoa(shape._blockid).split('=')[0]}" class="svgclickg">${sstr}</g>`
+        var stoi=s=>'s'+new TextEncoder().encode(s).reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '')
+        var itos=i=>new TextDecoder().decode(new Uint8Array(i.slice(1).match(/[\da-fA-F]{2}/gi).map(hex => parseInt(hex, 16))))
+        sstr=`<g id="${stoi(shape._blockid)}" class="svgclickg">${sstr}</g>`
     }
     this.addto(sstr,collection)
 }

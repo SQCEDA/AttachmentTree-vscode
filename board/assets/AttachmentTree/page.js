@@ -1,3 +1,5 @@
+var stoi=s=>'s'+new TextEncoder().encode(s).reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '')
+var itos=i=>new TextDecoder().decode(new Uint8Array(i.slice(1).match(/[\da-fA-F]{2}/gi).map(hex => parseInt(hex, 16))))
 // if (localStorage.getItem('AttachmentTree')!=null) {
 //     try {
 //         document.querySelector('#blocklyinput').value=localStorage.getItem('AttachmentTree')
@@ -30,15 +32,30 @@ var defaultCode_JSON_withid = function (ruleName,args,block) {
     return ret
 }
 
+var lasthandlei=[null,'']
 function highlightblock(blockid) {
+    console.log(blockid)
+    AttachmentTreeFunctions.workspace().centerOnBlock(blockid)
+    if (lasthandlei[0]!=null) {
+        clearInterval(lasthandlei[0])
+        lasthandlei[0]=null
+        AttachmentTreeFunctions.workspace().getBlockById(lasthandlei[1]).removeSelect()
+    }
+    AttachmentTreeFunctions.workspace().getBlockById(blockid).addSelect()
     var handlei=setInterval(() => {
         AttachmentTreeFunctions.workspace().highlightBlock(blockid,true)
         setTimeout(() => {
             AttachmentTreeFunctions.workspace().highlightBlock(blockid,false)
         }, 300);
     }, 600);
+    lasthandlei[0]=handlei
+    lasthandlei[1]=blockid
     setTimeout(() => {
-        clearInterval(handlei)
+        if (lasthandlei[0]==handlei) {
+            AttachmentTreeFunctions.workspace().getBlockById(blockid).removeSelect()
+            clearInterval(handlei)
+            lasthandlei[0]=null
+        }
     }, 5000);
 }
 
@@ -53,8 +70,7 @@ window.buildBlocks=function(params) {
                     if (event.type!=='ui' || event.element!=='click') return;
                     // console.log('clickhighlight')
                     // console.log(event.blockId)
-                    // console.log('#'+btoa(event.blockId).split('=')[0])
-                    var svgcid=document.querySelector('#'+btoa(event.blockId).split('=')[0])
+                    var svgcid=document.querySelector('#'+stoi(event.blockId))
                     if (svgcid) {
                         svgcid.children[0].style.fill='black'
                         svgcid.children[0].style.stroke = 'red'; // 设置边框颜色为红色
@@ -142,7 +158,7 @@ function listensvg() {
     document.querySelectorAll('.svgclickg').forEach(v=>{
         v.addEventListener('click',function (event) {
             // console.log(v,event)
-            highlightblock(atob(v.id))
+            highlightblock(itos(v.id))
         })
     })
 }
