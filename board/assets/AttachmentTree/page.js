@@ -68,9 +68,14 @@ window.buildBlocks=function(params) {
             function clickhighlight(event) {
                 try {
                     if (event.type!=='ui' || event.element!=='click') return;
-                    // console.log('clickhighlight')
+                    // console.log(event)
                     // console.log(event.blockId)
                     var svgcid=document.querySelector('#'+stoi(event.blockId))
+                    if(AttachmentTreeFunctions.workspace().getBlockById(event.blockId).type=='structure'){
+                        svgcid=document.querySelector('#'+stoi(
+                            eval('('+Blockly.JavaScript.statementToCode(AttachmentTreeFunctions.workspace().getBlockById(event.blockId),'shape')+'._blockid)')
+                        ))
+                    }
                     if (svgcid) {
                         svgcid.children[0].style.fill='black'
                         svgcid.children[0].style.stroke = 'red'; // 设置边框颜色为红色
@@ -85,8 +90,13 @@ window.buildBlocks=function(params) {
             
             AttachmentTreeFunctions.workspace().addChangeListener(clickhighlight);
         }
-        AttachmentTreeFunctions.parse(eval('('+document.querySelector('#blocklyinput').value+')'))
-        walker.import(eval('('+document.querySelector('#blocklyinput').value+')'));svgoutput.innerHTML=walker.buildsvg();svgsizefunc();listensvg();
+        var obj=eval('('+document.querySelector('#blocklyinput').value+')')
+        AttachmentTreeFunctions.parse(obj)
+        if (!obj._blockid) {
+            var code = Blockly.JavaScript.workspaceToCode(AttachmentTreeFunctions.workspace());
+            obj=eval('('+code+')')
+        }
+        walker.import(obj);svgoutput.innerHTML=walker.buildsvg();svgsizefunc();listensvg();
     } catch (error) {
         if(error.message!=='AttachmentTreeFunctions is not defined')console.error(error)
     }

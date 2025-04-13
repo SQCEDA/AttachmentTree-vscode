@@ -1,3 +1,6 @@
+var stoi=s=>'s'+new TextEncoder().encode(s).reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '')
+var itos=i=>new TextDecoder().decode(new Uint8Array(i.slice(1).match(/[\da-fA-F]{2}/gi).map(hex => parseInt(hex, 16))))
+
 /**
  * @class
  */
@@ -123,6 +126,9 @@ walkerType.prototype.traversal = function(attachments){
                 pts=pts.map(v=>'L'+v.join(','))
                 pts[0]=' '+pts[0].slice(1)
                 var sstr=`<path stroke="none" d="M${pts.join('')}Z" />`
+                if (structure._blockid) {
+                    sstr=`<g id="${stoi(structure._blockid)}" class="svgclickg">${sstr}</g>`
+                }
                 walker.addto(sstr,structure.collection)
             }
 
@@ -224,8 +230,6 @@ walkerType.prototype.buildshape = function(shape,width,height,collection){
             break;
     }
     if (shape._blockid) {
-        var stoi=s=>'s'+new TextEncoder().encode(s).reduce((acc, val) => acc + val.toString(16).padStart(2, '0'), '')
-        var itos=i=>new TextDecoder().decode(new Uint8Array(i.slice(1).match(/[\da-fA-F]{2}/gi).map(hex => parseInt(hex, 16))))
         sstr=`<g id="${stoi(shape._blockid)}" class="svgclickg">${sstr}</g>`
     }
     this.addto(sstr,collection)
