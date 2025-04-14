@@ -173,6 +173,29 @@ function listensvg() {
     })
 }
 
+function quickvarchange(scale){
+    const activeElement = document.activeElement;
+    if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+        const info = {}
+        info.input = activeElement;
+        info.start = activeElement.selectionStart;
+        info.end = activeElement.selectionEnd;
+        info.value = activeElement.value;
+
+        var oldText=info.value.slice(info.start,info.end)
+        console.log(oldText)
+
+        var newText=eval(oldText)*scale+''
+
+        info.input.value = info.value.slice(0, info.start) + newText + info.value.slice(info.end);
+        
+        info.input.setSelectionRange(info.start, info.start + newText.length);
+
+        const event = new Event('input', { bubbles: true, cancelable: true });
+        info.input.dispatchEvent(event);
+    }
+}
+
 var replaceInputinfo={}
 function replaceInputSelection() {
     const activeElement = document.activeElement;
@@ -212,6 +235,10 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'F2' || e.keyCode === 113) {
         e.preventDefault();
         replaceInputSelection();
+    }
+    if (e.key === 'F3' || e.key === 'F4') {
+        e.preventDefault();
+        quickvarchange(e.key === 'F3'?1/1.1:1.1);
     }
 });
 
