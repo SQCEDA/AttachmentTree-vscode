@@ -172,3 +172,77 @@ function listensvg() {
         })
     })
 }
+
+var replaceInputinfo={}
+function replaceInputSelection() {
+    const activeElement = document.activeElement;
+    if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+        const info = replaceInputinfo
+        if (activeElement.selectionStart==activeElement.selectionEnd && activeElement!=info.input) {
+            return
+        }
+        
+        if (activeElement.selectionStart!=activeElement.selectionEnd) {
+            info.input = activeElement;
+            info.start = activeElement.selectionStart;
+            info.end = activeElement.selectionEnd;
+            info.value = activeElement.value;
+            
+            var oldText=info.value.slice(info.start,info.end)
+            console.log(oldText)
+    
+            var newText=''
+    
+            info.input.value = info.value.slice(0, info.start) + newText + info.value.slice(info.end);
+            
+            info.input.setSelectionRange(info.start + newText.length, info.start + newText.length);
+        }else{
+            
+            insertVarBlock(info.input.value.slice(info.start,info.start+info.input.value.length-(info.value.length-info.end+info.start)),info.value.slice(info.start,info.end))
+            
+            const event = new Event('input', { bubbles: true, cancelable: true });
+            info.input.dispatchEvent(event);
+        }
+
+    }
+}
+
+// 绑定 F2 快捷键
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'F2' || e.keyCode === 113) {
+        e.preventDefault();
+        replaceInputSelection();
+    }
+});
+
+// 改成按第一次f2剪切掉选中值, 按第二次f2时设成变量名
+window.insertVarBlock=function(id,value){
+    console.log(id,value)
+    // var obj=eval('['+AttachmentTreeBlocks[b.type].generFunc(b)+'][0]')
+    var obj={
+        "type": "variable",
+        "id": id,
+        "value": value,
+        "description": ""
+    }
+
+    var xml_text = AttachmentTreeFunctions.parser.parse(obj);
+    var xml = Blockly.Xml.textToDom('<xml>'+xml_text+'</xml>');
+    a=Blockly.Xml.domToWorkspace(xml, AttachmentTreeFunctions.workspace());
+    c=AttachmentTreeFunctions.workspace().getBlockById(a[0])
+
+    var gobj=JSON.parse( document.querySelector('#blocklyinput').value)
+    b=AttachmentTreeFunctions.workspace().getBlockById(gobj.define.slice(-1)[0]._blockid)
+
+    b.nextConnection.connect(c.previousConnection)
+
+    // var previousTarget = b.previousConnection.targetConnection;
+    // b.previousConnection.disconnect()
+    // previousTarget.connect(c.previousConnection)
+    // c.nextConnection.connect(b.nextConnection.targetConnection)
+    // b.previousConnection.targetConnection.connect(c.previousConnection)
+    // b.dispose(true,false)
+    // b.dispose(true,true)
+
+}
+
