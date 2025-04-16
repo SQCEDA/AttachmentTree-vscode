@@ -2,7 +2,7 @@
 	"name": "AttachmentTree-vscode",
 	"displayName": "AttachmentTree-vscode",
 	"description": "AttachmentTree-vscode",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"publisher": "zhaouv",
 	"license": "MIT",
 	"repository": {
@@ -40,6 +40,27 @@
 					"group": "7_modification"
 				}
 			]
+		},
+		"configuration": {
+			"type": "object",
+			"title": "AttachmentTree",
+			"properties": {
+				"AttachmentTree.customized": {
+					"type": "array",
+					"default": [
+						{
+							"type": "comment",
+							"content": "change the type of next object to script to change hot keys. f3 f4 ctrl+t ctrl+r ..."
+						},
+						{
+							"type": "script_demo",
+							"function": "globalThis.atkeys.map={'f2':'atkeys.funcs.define()','f4':'atkeys.funcs.scale(1/1.1)','f7':'atkeys.funcs.scale(1.1)'}",
+							"version": "0.3.2"
+						}
+					],
+					"description": "Add customized content"
+				}
+			}
 		}
 	},
 	"scripts": {},

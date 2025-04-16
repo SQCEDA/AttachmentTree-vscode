@@ -170,7 +170,7 @@ function activate(context) {
   }
 
   function pushCustom() {
-    currentPanel.webview.postMessage({ command: 'custom', content: { operate: [] } });
+    currentPanel.webview.postMessage({ command: 'custom', content: { operate: vscode.workspace.getConfiguration('AttachmentTree')['customized']} });
   }
 
 

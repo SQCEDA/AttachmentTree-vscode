@@ -185,7 +185,11 @@ function quickvarchange(scale){
         var oldText=info.value.slice(info.start,info.end)
         console.log(oldText)
 
-        var newText=eval(oldText)*scale+''
+        var newvalue=eval(oldText)*scale
+        if ((Math.round(newvalue)-newvalue)**2<0.0001) {
+            newvalue=Math.round(newvalue)
+        }
+        var newText=newvalue+''
 
         info.input.value = info.value.slice(0, info.start) + newText + info.value.slice(info.end);
         
@@ -220,25 +224,36 @@ function replaceInputSelection() {
             
             info.input.setSelectionRange(info.start + newText.length, info.start + newText.length);
         }else{
-            
-            insertVarBlock(info.input.value.slice(info.start,info.start+info.input.value.length-(info.value.length-info.end+info.start)),info.value.slice(info.start,info.end))
-            
-            const event = new Event('input', { bubbles: true, cancelable: true });
-            info.input.dispatchEvent(event);
+            let id=info.input.value.slice(info.start,info.start+info.input.value.length-(info.value.length-info.end+info.start))
+            let value=info.value.slice(info.start,info.end)
+            if (id!=='') {
+                insertVarBlock(id,value)
+                
+                const event = new Event('input', { bubbles: true, cancelable: true });
+                info.input.dispatchEvent(event);
+            }
         }
 
     }
 }
 
-// 绑定 F2 快捷键
+globalThis.atkeys={
+    funcs:{
+        define:()=>replaceInputSelection(),
+        scale:(x)=>quickvarchange(x),
+    },
+    map:{'f2':'atkeys.funcs.define()','f3':'atkeys.funcs.scale(1/1.1)','f4':'atkeys.funcs.scale(1.1)'}
+}
+// 绑定快捷键
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'F2' || e.keyCode === 113) {
-        e.preventDefault();
-        replaceInputSelection();
+    let key = e.key
+    if (e.ctrlKey) {
+        key='ctrl+'+key
     }
-    if (e.key === 'F3' || e.key === 'F4') {
+    let content = globalThis.atkeys.map[key.toLowerCase()]
+    if (content) {
         e.preventDefault();
-        quickvarchange(e.key === 'F3'?1/1.1:1.1);
+        eval(content);
     }
 });
 
