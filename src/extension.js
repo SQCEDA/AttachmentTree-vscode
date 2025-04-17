@@ -109,21 +109,26 @@ function activate(context) {
       currentEditor = currentEditor_
       currentLine = currentLine_
       let filename = currentEditor.document.fileName
+      let createWhenNoExist = false
       if(!filename.endsWith('.at.json')){
         let match = /['"][^'"]+\.at\.json['"]/.exec(text)
         if(match){
           let matchname=eval(match[0])
           if (path.isAbsolute(matchname)) {
             filename=matchname
+            createWhenNoExist=true
           }else{
             let dir = path.dirname(filename);
-            let trypath=path.join(dir,matchname);
-            if (fs.existsSync(trypath)) {
-              filename=trypath;
+            if (/loadfromlib/.exec(text)) {
+              filename=path.join(dir,'../gdsql/shape/attachment',matchname);
+              createWhenNoExist=true
             }else{
-              dir=vscode.workspace.rootPath;
-              trypath=path.join(dir,matchname);
-              if (fs.existsSync(trypath)) filename=trypath;
+              filename=path.join(dir,matchname);
+              if (!fs.existsSync(filename)) {
+                dir=vscode.workspace.rootPath;
+                let trypath=path.join(dir,matchname);
+                if (fs.existsSync(trypath)) filename=trypath;
+              }
             }
           }
         }else{
@@ -133,9 +138,13 @@ function activate(context) {
       }
       let filecontent = readFile(filename);
       if (filecontent===null) {
-        filecontent=''
-        filename=''
-        vscode.window.showErrorMessage('file not exist')
+        if(createWhenNoExist){
+          writeFile('{"type":"attachmentTree","define":[{"type":"variablenone"}],"structure":[{"type":"structurenone"}]}',filename)
+        }else{
+          filecontent=''
+          filename=''
+          vscode.window.showErrorMessage('file not exist')
+        }
       }
       currentPanel.webview.postMessage({ command: 'currentLine', content: {name:filename,value:filecontent} });
     }

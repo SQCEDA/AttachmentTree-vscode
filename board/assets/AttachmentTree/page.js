@@ -118,7 +118,7 @@ window.trigger = function(params) {
 }
 
 function autoresizesvg(params) {
-    bbox=svgoutput.children[0].getBBox();svgoutput.children[0].setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+    bbox=svgoutput.children[0].getBBox();svgoutput.children[0].setAttribute("viewBox", `${bbox.x} ${bbox.y} ${Math.max(bbox.width,bbox.height)} ${Math.max(bbox.height,bbox.width)}`);
 }
 
 window.svgsizefunc=autoresizesvg
