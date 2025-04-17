@@ -116,7 +116,6 @@ function activate(context) {
           let matchname=eval(match[0])
           if (path.isAbsolute(matchname)) {
             filename=matchname
-            createWhenNoExist=true
           }else{
             let dir = path.dirname(filename);
             if (/loadfromlib/.exec(text)) {
