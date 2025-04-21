@@ -1203,20 +1203,8 @@ var toolbox = (function(){
 })();
 
 
-
-    var workspace = Blockly.inject('blocklyDiv',{
-        media: globalThis.blocklymedia,
-        toolbox: toolbox,
-        zoom:{
-            controls: true,
-            wheel: false,//false
-            startScale: 0.5,
-            maxScale: 1.2,
-            minScale: 0.2,
-            scaleSpeed: 1.08
-        },
-        trashcan: false,
-    });
+    globalThis.blocklydivinitjson.toolbox=toolbox
+    var workspace = Blockly.inject('blocklyDiv',globalThis.blocklydivinitjson);
     AttachmentTreeFunctions.workspace = function(){return workspace}
     
     function omitedcheckUpdateFunction(event) {

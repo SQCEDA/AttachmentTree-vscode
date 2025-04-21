@@ -36,7 +36,7 @@
     <div style="float: left;">
         <div id="blocklyDiv" style="height: 550px; width: 450px;"></div>
     </div>
-    <div style="float: left;width:calc(95vw - 450px);margin-left: 0.3vw;">
+    <div id="svgParentDiv" style="float: left;width:calc(95vw - 450px);margin-left: 0.3vw;">
         <div id="svgoutput" style="transform: rotateX(180deg);"></div>
     </div>
     <div style="clear: both;"></div>
@@ -44,8 +44,31 @@
     </textarea>
 
     <script>
+      globalThis.blocklydivinitjson={
+          media: './assets/antlr-blockly/media/',
+          toolbox: 'toolbox',
+          zoom:{
+              controls: true,
+              wheel: false,//false
+              startScale: 0.5,
+              maxScale: 1.2,
+              minScale: 0.2,
+              scaleSpeed: 1.08
+          },
+          trashcan: false,
+      };
       globalThis.blocklymedia='./assets/antlr-blockly/media/'
       globalThis.vscodenoce='ToBeReplacedByRandomToken'
+      var blocklysetting='blockly_setting_inject_token'
+      if(blocklysetting.width){
+        blocklyDiv.style.width=blocklysetting.width
+        svgParentDiv.style.width=`calc(95vw - ${blocklysetting.width})`
+        blocklyDiv.style.height=blocklysetting.height
+        globalThis.blocklydivinitjson.zoom.startScale=blocklysetting.startScale
+        globalThis.blocklydivinitjson.zoom.maxScale=blocklysetting.maxScale
+        globalThis.blocklydivinitjson.zoom.minScale=blocklysetting.minScale
+        globalThis.blocklydivinitjson.zoom.scaleSpeed=blocklysetting.scaleSpeed
+      }
     </script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/Converter.bundle.min.js"></script>
     <script nonce="ToBeReplacedByRandomToken" src="./assets/AttachmentTree/walker.js"></script>

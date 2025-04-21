@@ -1,5 +1,17 @@
 # Change Log
 
+## 0.3.5 (2025-04-21)
+
+允许通过在`"AttachmentTree.customized"`中添加
+```json
+{
+    "type": "blockly",
+    "blockly": "{width: '450px', height: '550px', startScale: 0.5, maxScale: 1.2, minScale: 0.2, scaleSpeed: 1.08}",
+    "version": "0.3.2"
+}
+```
+更改图块编辑器样式
+
 ## 0.3.4 (2025-04-17)
 
 更改路径尝试策略

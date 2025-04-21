@@ -197,5 +197,11 @@ function activate(context) {
 exports.activate = activate;
 
 function getWebviewContent(cdnpath) {
-  return webviewContent.replaceAll('./assets',cdnpath)
+  let ret=webviewContent.replaceAll('./assets',cdnpath)
+  Array.from(vscode.workspace.getConfiguration('AttachmentTree')['customized']).forEach((operate)=>{
+    if (operate.type === 'blockly') {
+      ret=ret.replaceAll("'blockly_setting_inject_token'",operate.blockly)
+    }
+  })
+  return ret
 }

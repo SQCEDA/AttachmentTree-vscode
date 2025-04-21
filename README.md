@@ -46,6 +46,17 @@
 
 图块中的值都是表达式, 可以填数值或变量或者运算
 
+可以在vscode的设置中搜索AttachmentTree来更改图块编辑器大小:
+在`"AttachmentTree.customized"`中添加
+```json
+{
+    "type": "blockly",
+    "blockly": "{width: '450px', height: '550px', startScale: 0.5, maxScale: 1.2, minScale: 0.2, scaleSpeed: 1.08}",
+    "version": "0.3.2"
+}
+```
+更改图块编辑器样式
+
 ### 变量定义图块
 
 默认值可以直接使用其他变量来计算, 例如填`xx*2**0.5`  
@@ -57,7 +68,15 @@
 F2: 在画图图块中, 点一个值时会自动框选(蓝色背景的选中状态,假设是`50000`), 此时按F2, 该表达式会被记录下来并删除. 此时敲入变量名例如`abc`, 再按F2. 这时会自动添加一个变量定义图块被填入了`abc`值`50000`.
 F3 F4: 选中状态的数值字面量(不支持变量和表达式), F3快速缩小1.1倍, F4快速放大1.1倍
 
-(可以在vscode的设置中搜索AttachmentTree来更改快捷键绑定)
+可以在vscode的设置中搜索AttachmentTree来更改快捷键绑定:
+在`"AttachmentTree.customized"`中添加
+```json
+{
+    "type": "script",
+    "function": "globalThis.atkeys.map={'f2':'atkeys.funcs.define()','f4':'atkeys.funcs.scale(1/1.1)','f7':'atkeys.funcs.scale(1.1)'}",
+    "version": "0.3.2"
+}
+```
 
 ### 方向指定图块
 

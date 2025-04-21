@@ -2,7 +2,7 @@
 	"name": "AttachmentTree-vscode",
 	"displayName": "AttachmentTree-vscode",
 	"description": "AttachmentTree-vscode",
-	"version": "0.3.4",
+	"version": "0.3.5",
 	"publisher": "zhaouv",
 	"license": "MIT",
 	"repository": {
@@ -55,6 +55,15 @@
 						{
 							"type": "script_demo",
 							"function": "globalThis.atkeys.map={'f2':'atkeys.funcs.define()','f4':'atkeys.funcs.scale(1/1.1)','f7':'atkeys.funcs.scale(1.1)'}",
+							"version": "0.3.2"
+						},
+						{
+							"type": "comment",
+							"content": "change the type of next object to blockly to adjust blockly editor."
+						},
+						{
+							"type": "blockly_demo",
+							"blockly": "{width: '450px', height: '550px', startScale: 0.5, maxScale: 1.2, minScale: 0.2, scaleSpeed: 1.08}",
 							"version": "0.3.2"
 						}
 					],
