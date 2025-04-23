@@ -201,6 +201,12 @@ function quickvarchange(scale){
         if ((Math.round(newvalue)-newvalue)**2<0.0001) {
             newvalue=Math.round(newvalue)
         }
+        if (scale<1 && newvalue**2<500**2) {
+            newvalue=0
+        }
+        if (scale>1 && newvalue**2<500**2) {
+            newvalue=500
+        }
         var newText=newvalue+''
 
         info.input.value = info.value.slice(0, info.start) + newText + info.value.slice(info.end);

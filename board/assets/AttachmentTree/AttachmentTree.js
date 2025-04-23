@@ -628,7 +628,7 @@ Object.assign(AttachmentTreeBlocks,{
         "type": "statement",
         "json": {
             "type": "quadrilateral",
-            "message0": "▱ (→,↓,←,↑) %1 %2 %3 %4",
+            "message0": "▱ (t→,r↓,d←,l↑) %1 %2 %3 %4",
             "args0": [
                 Object.assign({},AttachmentTreeBlocks.Evalstr,{
                     "name": "ul",
@@ -695,7 +695,7 @@ Object.assign(AttachmentTreeBlocks,{
         "type": "statement",
         "json": {
             "type": "quadrilateraldagger",
-            "message0": "▱ (←,↑,→,↓) %1 %2 %3 %4",
+            "message0": "▱ (t←,r↑,d→,l↓) %1 %2 %3 %4",
             "args0": [
                 Object.assign({},AttachmentTreeBlocks.Evalstr,{
                     "name": "ur",
@@ -1158,21 +1158,24 @@ var toolbox = (function(){
         // 每个键值对作为一页
         "statement": [
             // 所有语句块
-            AttachmentTreeBlocks["attachmentTree"].xmlText(),
-            AttachmentTreeBlocks["variable"].xmlText(),
-            AttachmentTreeBlocks["innervariable"].xmlText(),
-            AttachmentTreeBlocks["variablenone"].xmlText(),
-            AttachmentTreeBlocks["attachment"].xmlText(),
-            AttachmentTreeBlocks["attachmentnone"].xmlText(),
-            AttachmentTreeBlocks["structure"].xmlText(),
-            AttachmentTreeBlocks["structurefrompts"].xmlText(),
-            AttachmentTreeBlocks["structurenone"].xmlText(),
+            AttachmentTreeBlocks["attachment"].xmlText([null,AttachmentTreeBlocks["structure"].xmlText()]),
             AttachmentTreeBlocks["brush"].xmlText(),
             AttachmentTreeBlocks["arc"].xmlText(),
             AttachmentTreeBlocks["quadrilateral"].xmlText(),
             AttachmentTreeBlocks["quadrilateraldagger"].xmlText(),
             AttachmentTreeBlocks["triangle"].xmlText(),
             AttachmentTreeBlocks["rectangle"].xmlText(),
+            AttachmentTreeBlocks["attachmentTree"].xmlText([AttachmentTreeBlocks["variable"].xmlText(),AttachmentTreeBlocks["structure"].xmlText()]),
+            //
+            // AttachmentTreeBlocks["attachmentTree"].xmlText(),
+            AttachmentTreeBlocks["variable"].xmlText(),
+            AttachmentTreeBlocks["innervariable"].xmlText(),
+            AttachmentTreeBlocks["structurefrompts"].xmlText(),
+            // AttachmentTreeBlocks["variablenone"].xmlText(),
+            AttachmentTreeBlocks["attachment"].xmlText(),
+            // AttachmentTreeBlocks["attachmentnone"].xmlText(),
+            AttachmentTreeBlocks["structure"].xmlText(),
+            // AttachmentTreeBlocks["structurenone"].xmlText(),
         ],
         "value": [
             // 所有值块
