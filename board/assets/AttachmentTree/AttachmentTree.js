@@ -341,7 +341,7 @@ Object.assign(AttachmentTreeBlocks,{
                 }),
                 Object.assign({},AttachmentTreeBlocks.NormalStr,{
                     "name": "collection",
-                    "text": "10_0"
+                    "text": "0"
                 }),
                 Object.assign({},AttachmentTreeBlocks.Evalstr,{
                     "name": "width",
@@ -424,7 +424,7 @@ Object.assign(AttachmentTreeBlocks,{
             "args0": [
                 Object.assign({},AttachmentTreeBlocks.NormalStr,{
                     "name": "collection",
-                    "text": "10_0"
+                    "text": "0"
                 }),
                 Object.assign({},AttachmentTreeBlocks.Evalstr,{
                     "name": "scale",

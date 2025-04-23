@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.3.6 (2025-04-23)
+
+移除fixed viewbox  
+新增last click, 把视野集中到上次焦点的图形
+
 ## 0.3.5 (2025-04-21)
 
 允许通过在`"AttachmentTree.customized"`中添加

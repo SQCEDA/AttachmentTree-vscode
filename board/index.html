@@ -24,8 +24,9 @@
   <p>
     <button id="importbutton" onclick="window.trigger([0,lastvalue[0]+' ']);window.buildBlocks()">import</button>
     <button id="savebutton" style="display: none;" onclick="globalThis.clickReturn()">save</button>
-    <input id="svgviewbox" type="text" style="width: 300px;" value="-100000 -100000 200000 200000">
-    <button onclick="window.svgsizefunc=()=>0;walker.viewbox=svgviewbox.value;window.buildBlocks()">fixed viewbox</button>
+    <input id="svgviewbox" type="text" style="width: 300px;display: none;" value="-100000 -100000 200000 200000">
+    <button onclick="window.svgsizefunc=()=>0;walker.viewbox=svgviewbox.value;window.buildBlocks()" style="display: none;">fixed viewbox</button>
+    <button onclick='svgviewboxlastclick()'>last click</button>
     <button onclick='window.svgsizefunc=autoresizesvg;autoresizesvg()'>auto viewbox</button>
     <span class='pc0'>0</span><span
         class='pc1'>1</span><span class='pc2'>2</span><span class='pc3'>3</span><span class='pc4'>4</span><span

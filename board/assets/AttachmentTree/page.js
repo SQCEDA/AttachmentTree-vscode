@@ -59,6 +59,15 @@ function highlightblock(blockid) {
     }, 5000);
 }
 
+function blinksvg(svgcid) {
+    svgcid.children[0].style.fill='black'
+    svgcid.children[0].style.stroke = 'red'; // 设置边框颜色为红色
+    svgcid.children[0].style.strokeWidth = '2000'; // 设置边框宽度为 2
+    setTimeout(() => {
+        svgcid.children[0].style=''
+    }, 1000);
+}
+
 window.buildBlocks=function(params) {
     // console.log('buildBlocks')
     try {
@@ -77,12 +86,8 @@ window.buildBlocks=function(params) {
                         ))
                     }
                     if (svgcid) {
-                        svgcid.children[0].style.fill='black'
-                        svgcid.children[0].style.stroke = 'red'; // 设置边框颜色为红色
-                        svgcid.children[0].style.strokeWidth = '2000'; // 设置边框宽度为 2
-                        setTimeout(() => {
-                            svgcid.children[0].style=''
-                        }, 1000);
+                        globalThis.lastclicksvgid=svgcid
+                        blinksvg(svgcid)
                     }
                 } catch (error) {
                 }
@@ -115,6 +120,12 @@ window.trigger = function(params) {
     // }
     // console.log(params[1])
     walker.import(eval('('+document.querySelector('#blocklyinput').value+')'));svgoutput.innerHTML=walker.buildsvg();svgsizefunc();listensvg();
+}
+
+globalThis.lastclicksvgid=''
+function svgviewboxlastclick(){
+    bbox=globalThis.lastclicksvgid.getBBox();svgoutput.children[0].setAttribute("viewBox", `${bbox.x-Math.max(bbox.width,bbox.height)} ${bbox.y-Math.max(bbox.width,bbox.height)} ${3*Math.max(bbox.width,bbox.height)} ${3*Math.max(bbox.height,bbox.width)}`);
+    blinksvg(globalThis.lastclicksvgid)
 }
 
 function autoresizesvg(params) {
@@ -168,6 +179,7 @@ function listensvg() {
     document.querySelectorAll('.svgclickg').forEach(v=>{
         v.addEventListener('click',function (event) {
             // console.log(v,event)
+            globalThis.lastclicksvgid=v
             highlightblock(itos(v.id))
         })
     })
