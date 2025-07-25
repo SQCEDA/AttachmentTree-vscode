@@ -36,7 +36,10 @@ const drawAPI = {
         console.log(operate);
         if (operate.type === 'script') {
           let func = new Function(operate.function)
-          func()
+          try {
+            func()
+          } catch (error) {
+          }
         }
       },
     },

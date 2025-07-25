@@ -1,0 +1,11 @@
+#blocklyDiv .blocklyToolboxDiv {
+    width: 30px;
+}
+
+body {
+    background-color: white;
+    padding: 0;
+}
+span.blocklyTreeLabel{
+    color:black;
+}

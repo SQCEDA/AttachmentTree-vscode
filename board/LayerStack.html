@@ -1,0 +1,49 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title>LayerStack</title>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/blockly_compressed.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/blocks_compressed.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/javascript_compressed.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/zh-hans.js"></script>
+    <link rel="stylesheet" href="./assets/LayerStack/style.css">
+</head>
+
+<body>
+    <p>
+        <button id="importbutton" onclick="window.trigger([0,lastvalue[0]+' ']);window.buildBlocks()">import</button>
+        <button id="savebutton" style="display: none;" onclick="globalThis.clickReturn()">save</button>
+        <button onclick="window?.buildHeightCall()">计算高度</button>
+    </p>
+    <div style="clear: both;"></div>
+    <div style="float: left;">
+        <div id="blocklyDiv" style="height: 550px; width: 450px;"></div>
+    </div>
+    <div style="float: left;width:calc(95vw - 450px);margin-left: 0.3vw;">
+        <div id="svgoutput" style="transform: rotateX(180deg);"></div>
+        <textarea name="blocklyinput" id="blocklyinput" cols="60" rows="27" spellcheck="false">
+        </textarea>
+    </div>
+    <div style="clear: both;"></div>
+    <p id="heightinfop" style="color: black;">
+        
+    </p>
+    <p style="color: black;">
+        整平面: 未指定时, 每一层默认堆在上一个整平面上.<br>
+        不基于整平面: 只放置在指定的层上.<br>
+        高度计算逻辑: zmin是基于的层的zmax中最低的, zmax是基于的层的最高的zmax加自身厚度. 对于刻蚀, zmin是基于的层的zmax中最低的减厚度, zmax是基于的层的最高的zmax减厚度<br>
+    </p>
+    <script>
+        globalThis.vscodenoce='ToBeReplacedByRandomToken'
+        globalThis.blocklymedia='./assets/antlr-blockly/media/'
+        globalThis.blocklydynamiclist='blockly_dynamic_list_inject_token'
+        // globalThis.blocklydynamiclist={names:[['Material_List',['air','si','m1','m2']],['LayerID_List',['L1','L2']]]}
+    </script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/antlr-blockly/Converter.bundle.min.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/LayerStack/page.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/LayerStack/LayerStack.js"></script>
+    <script nonce="ToBeReplacedByRandomToken" src="./assets/connect.js"></script>
+</body>
+
+</html>

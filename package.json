@@ -2,7 +2,7 @@
 	"name": "AttachmentTree-vscode",
 	"displayName": "AttachmentTree-vscode",
 	"description": "AttachmentTree-vscode",
-	"version": "0.3.7",
+	"version": "0.3.8",
 	"publisher": "zhaouv",
 	"license": "MIT",
 	"repository": {
@@ -30,12 +30,22 @@
 				"command": "AttachmentTree.editCurrentLineAsAttachmentTree",
 				"title": "AttachmentTree",
 				"category": "AttachmentTree"
+			},
+			{
+				"command": "AttachmentTree.editCurrentLineAsLayerStack",
+				"title": "LayerStack",
+				"category": "AttachmentTree"
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
 					"command": "AttachmentTree.editCurrentLineAsAttachmentTree",
+					"when": "editorFocus",
+					"group": "7_modification"
+				},
+				{
+					"command": "AttachmentTree.editCurrentLineAsLayerStack",
 					"when": "editorFocus",
 					"group": "7_modification"
 				}
@@ -64,6 +74,15 @@
 						{
 							"type": "blockly_demo",
 							"blockly": "{width: '450px', height: '550px', startScale: 0.5, maxScale: 1.2, minScale: 0.2, scaleSpeed: 1.08}",
+							"version": "0.3.2"
+						},
+						{
+							"type": "comment",
+							"content": "change the type of next object to dynamiclist to adjust layerstack names."
+						},
+						{
+							"type": "dynamiclist_demo",
+							"dynamiclist": "{names:[['Material_List',['air','si','m1','m2']],['LayerID_List',['L1','L2']]]}",
 							"version": "0.3.2"
 						}
 					],
