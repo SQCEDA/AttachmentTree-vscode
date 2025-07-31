@@ -1,20 +1,51 @@
 grammar LayerStack;
 
 layerstack:
-    '图层堆叠信息(底层的先定义)' BGNL layers=layer*
+    '变量定义' BGNL define=lsvariables+ '图层堆叠信息(底片放上面)' BGNL groups=layergroup+
 ;
 
-layer:
+lsvariables
+    :   'id' id=IdStr 'default' value=Evalstr 'description' description=NormalStr? #lsvariable
+/* lsvariable
+defaultMap : {id:'h1',value:50000,description:''}
+colour : 20
+*/
+    |   'none' #lsvariablenone
+/* lsvariablenone
+colour : 20
+*/
+;
+
+layergroup:
+    '单片(底层的先定义)' // BGNL
+    '上接触面名称' uptouchlayer=IdStr? '下接触面名称' downtouchlayer=IdStr? '片反置' reverse=Bool BGNL 
+    layers=layerlevel+
+/* layergroup
+color:220
+defaultMap:{uptouchlayer:'',downtouchlayer:'',reverse:false}
+*/;
+
+layerlevel:
     '名称' name=IdStr // BGNL
     '层' layerid=LayerID_List // BGNL
-    '材料' material=Material_List BGNL
+    '材料' material=Material_List // BGNL
     '厚度' thickness=Evalstr // BGNL
+    '倾角' angle=Evalstr BGNL
     '类型' layertype=Layertype_List // BGNL
-    '此层是整平面' plane=Bool BGNL
-    '基于层(逗号分隔)' basenames=Evalstr? // BGNL
-    '不基于整平面' basenoplane=Bool // BGNL
-/* layer
-defaultMap:{name:'L1',thickness:100000,plane:false,basenames:'',basenoplane:false}
+    '此层是整平面' plane=Bool // BGNL
+    '基于层(逗号分隔)' basenames=NormalStr? // BGNL
+    '不基于整平面' basenoplane=Bool// BGNL
+    //meta=layermeta*
+/* layerlevel
+color:70
+defaultMap:{name:'L1',thickness:100000,angle:0,plane:false,basenames:'',basenoplane:false}
+*/;
+
+layermeta
+    :   'no meta' #layermetanone
+    |   '注释' comment=NormalStr? #layermetacomment
+/* layermetacomment
+defaultMap:{comment:''}
 */;
 
 statExprSplit : '=== statement ^ === expression v ===' ;

@@ -1,7 +1,14 @@
 // Generated from LayerStack.g4 by antlr-blockly
 // 语句集合和表达式集合
 LayerStackBlocks = {
-
+    "lsvariables": [
+        "lsvariable",
+        "lsvariablenone"
+    ],
+    "layermeta": [
+        "layermetanone",
+        "layermetacomment"
+    ]
 }
 
 
@@ -93,15 +100,23 @@ Object.assign(LayerStackBlocks,{
         "type": "statement",
         "json": {
             "type": "layerstack",
-            "message0": "图层堆叠信息(底层的先定义) %1 %2",
+            "message0": "变量定义 %1 %2 图层堆叠信息(底片放上面) %3 %4",
             "args0": [
                 {
                     "type": "input_dummy"
                 },
                 {
                     "type": "input_statement",
-                    "name": "layers",
-                    "check": "layer"
+                    "name": "define",
+                    "check": LayerStackBlocks.lsvariables
+                },
+                {
+                    "type": "input_dummy"
+                },
+                {
+                    "type": "input_statement",
+                    "name": "groups",
+                    "check": "layergroup"
                 }
             ],
             "tooltip": "",
@@ -109,15 +124,22 @@ Object.assign(LayerStackBlocks,{
             "colour": 260
         },
         "generFunc": function(block) {
-            var layers = Blockly.JavaScript.statementToCode(block, 'layers');
+            var define = Blockly.JavaScript.statementToCode(block, 'define');
+            if (define==='') {
+                throw new OmitedError(block,'define','layerstack');
+            }
+            var groups = Blockly.JavaScript.statementToCode(block, 'groups');
+            if (groups==='') {
+                throw new OmitedError(block,'groups','layerstack');
+            }
             var code = LayerStackFunctions.defaultCode('layerstack',eval('['+LayerStackBlocks['layerstack'].args.join(',')+']'),block);
             return code;
         },
-        "args": ["layers"],
-        "argsType": ["statement"],
-        "argsGrammarName": ["layer"],
-        "omitted": [true],
-        "multi": [true],
+        "args": ["define","groups"],
+        "argsType": ["statement","statement"],
+        "argsGrammarName": ["lsvariables","layergroup"],
+        "omitted": [false,false],
+        "multi": [true,true],
         "fieldDefault": function (keyOrIndex) {
             return LayerStackFunctions.fieldDefault('layerstack',keyOrIndex);
         },
@@ -126,11 +148,156 @@ Object.assign(LayerStackBlocks,{
             return LayerStackFunctions.xmlText('layerstack',inputs,next,isShadow,comment,attribute);
         }
     },
-    "layer": {
+    "lsvariable": {
         "type": "statement",
         "json": {
-            "type": "layer",
-            "message0": "名称 %1 层 %2 材料 %3 %4 厚度 %5 类型 %6 此层是整平面 %7 %8 基于层(逗号分隔) %9 不基于整平面 %10",
+            "type": "lsvariable",
+            "message0": "id %1 default %2 description %3",
+            "args0": [
+                Object.assign({},LayerStackBlocks.IdStr,{
+                    "name": "id",
+                    "text": "h1"
+                }),
+                Object.assign({},LayerStackBlocks.Evalstr,{
+                    "name": "value",
+                    "text": 50000
+                }),
+                Object.assign({},LayerStackBlocks.NormalStr,{
+                    "name": "description",
+                    "text": ""
+                })
+            ],
+            "inputsInline": true,
+            "tooltip": "",
+            "helpUrl": "",
+            "colour": 20,
+            "previousStatement": "lsvariable",
+            "nextStatement": LayerStackBlocks.lsvariables
+        },
+        "generFunc": function(block) {
+            var id = block.getFieldValue('id');
+            if (id==='') {
+                throw new OmitedError(block,'id','lsvariable');
+            }
+            id = LayerStackFunctions.pre('IdStr')(id,block,'id','lsvariable');
+            var value = block.getFieldValue('value');
+            if (value==='') {
+                throw new OmitedError(block,'value','lsvariable');
+            }
+            value = LayerStackFunctions.pre('Evalstr')(value,block,'value','lsvariable');
+            var description = block.getFieldValue('description');
+            description = LayerStackFunctions.pre('NormalStr')(description,block,'description','lsvariable');
+            var code = LayerStackFunctions.defaultCode('lsvariable',eval('['+LayerStackBlocks['lsvariable'].args.join(',')+']'),block);
+            return code;
+        },
+        "args": ["id","value","description"],
+        "argsType": ["field","field","field"],
+        "argsGrammarName": ["IdStr","Evalstr","NormalStr"],
+        "omitted": [false,false,true],
+        "multi": [false,false,false],
+        "fieldDefault": function (keyOrIndex) {
+            return LayerStackFunctions.fieldDefault('lsvariable',keyOrIndex);
+        },
+        "menu": [],
+        "xmlText": function (inputs,next,isShadow,comment,attribute) {
+            return LayerStackFunctions.xmlText('lsvariable',inputs,next,isShadow,comment,attribute);
+        }
+    },
+    "lsvariablenone": {
+        "type": "statement",
+        "json": {
+            "type": "lsvariablenone",
+            "message0": "none",
+            "args0": [],
+            "inputsInline": true,
+            "tooltip": "",
+            "helpUrl": "",
+            "colour": 20,
+            "previousStatement": "lsvariablenone",
+            "nextStatement": LayerStackBlocks.lsvariables
+        },
+        "generFunc": function(block) {
+            var code = LayerStackFunctions.defaultCode('lsvariablenone',eval('['+LayerStackBlocks['lsvariablenone'].args.join(',')+']'),block);
+            return code;
+        },
+        "args": [],
+        "argsType": [],
+        "argsGrammarName": [],
+        "omitted": [],
+        "multi": [],
+        "fieldDefault": function (keyOrIndex) {
+            return LayerStackFunctions.fieldDefault('lsvariablenone',keyOrIndex);
+        },
+        "menu": [],
+        "xmlText": function (inputs,next,isShadow,comment,attribute) {
+            return LayerStackFunctions.xmlText('lsvariablenone',inputs,next,isShadow,comment,attribute);
+        }
+    },
+    "layergroup": {
+        "type": "statement",
+        "json": {
+            "type": "layergroup",
+            "message0": "单片(底层的先定义) 上接触面名称 %1 下接触面名称 %2 片反置 %3 %4 %5",
+            "args0": [
+                Object.assign({},LayerStackBlocks.IdStr,{
+                    "name": "uptouchlayer",
+                    "text": ""
+                }),
+                Object.assign({},LayerStackBlocks.IdStr,{
+                    "name": "downtouchlayer",
+                    "text": ""
+                }),
+                Object.assign({},LayerStackBlocks.Bool,{
+                    "name": "reverse",
+                    "checked": false
+                }),
+                {
+                    "type": "input_dummy"
+                },
+                {
+                    "type": "input_statement",
+                    "name": "layers",
+                    "check": "layerlevel"
+                }
+            ],
+            "tooltip": "",
+            "helpUrl": "",
+            "colour": 220,
+            "previousStatement": "layergroup",
+            "nextStatement": "layergroup"
+        },
+        "generFunc": function(block) {
+            var uptouchlayer = block.getFieldValue('uptouchlayer');
+            uptouchlayer = LayerStackFunctions.pre('IdStr')(uptouchlayer,block,'uptouchlayer','layergroup');
+            var downtouchlayer = block.getFieldValue('downtouchlayer');
+            downtouchlayer = LayerStackFunctions.pre('IdStr')(downtouchlayer,block,'downtouchlayer','layergroup');
+            var reverse = block.getFieldValue('reverse') === 'TRUE';
+            reverse = LayerStackFunctions.pre('Bool')(reverse,block,'reverse','layergroup');
+            var layers = Blockly.JavaScript.statementToCode(block, 'layers');
+            if (layers==='') {
+                throw new OmitedError(block,'layers','layergroup');
+            }
+            var code = LayerStackFunctions.defaultCode('layergroup',eval('['+LayerStackBlocks['layergroup'].args.join(',')+']'),block);
+            return code;
+        },
+        "args": ["uptouchlayer","downtouchlayer","reverse","layers"],
+        "argsType": ["field","field","field","statement"],
+        "argsGrammarName": ["IdStr","IdStr","Bool","layerlevel"],
+        "omitted": [true,true,false,false],
+        "multi": [false,false,false,true],
+        "fieldDefault": function (keyOrIndex) {
+            return LayerStackFunctions.fieldDefault('layergroup',keyOrIndex);
+        },
+        "menu": [],
+        "xmlText": function (inputs,next,isShadow,comment,attribute) {
+            return LayerStackFunctions.xmlText('layergroup',inputs,next,isShadow,comment,attribute);
+        }
+    },
+    "layerlevel": {
+        "type": "statement",
+        "json": {
+            "type": "layerlevel",
+            "message0": "名称 %1 层 %2 材料 %3 厚度 %4 倾角 %5 %6 类型 %7 此层是整平面 %8 基于层(逗号分隔) %9 不基于整平面 %10",
             "args0": [
                 Object.assign({},LayerStackBlocks.IdStr,{
                     "name": "name",
@@ -142,13 +309,17 @@ Object.assign(LayerStackBlocks,{
                 Object.assign({},LayerStackBlocks.Material_List,{
                     "name": "material"
                 }),
-                {
-                    "type": "input_dummy"
-                },
                 Object.assign({},LayerStackBlocks.Evalstr,{
                     "name": "thickness",
                     "text": 100000
                 }),
+                Object.assign({},LayerStackBlocks.Evalstr,{
+                    "name": "angle",
+                    "text": 0
+                }),
+                {
+                    "type": "input_dummy"
+                },
                 Object.assign({},LayerStackBlocks.Layertype_List,{
                     "name": "layertype"
                 }),
@@ -156,10 +327,7 @@ Object.assign(LayerStackBlocks,{
                     "name": "plane",
                     "checked": false
                 }),
-                {
-                    "type": "input_dummy"
-                },
-                Object.assign({},LayerStackBlocks.Evalstr,{
+                Object.assign({},LayerStackBlocks.NormalStr,{
                     "name": "basenames",
                     "text": ""
                 }),
@@ -170,47 +338,119 @@ Object.assign(LayerStackBlocks,{
             ],
             "tooltip": "",
             "helpUrl": "",
-            "colour": 300,
-            "previousStatement": "layer",
-            "nextStatement": "layer"
+            "colour": 70,
+            "previousStatement": "layerlevel",
+            "nextStatement": "layerlevel"
         },
         "generFunc": function(block) {
             var name = block.getFieldValue('name');
             if (name==='') {
-                throw new OmitedError(block,'name','layer');
+                throw new OmitedError(block,'name','layerlevel');
             }
-            name = LayerStackFunctions.pre('IdStr')(name,block,'name','layer');
+            name = LayerStackFunctions.pre('IdStr')(name,block,'name','layerlevel');
             var layerid = block.getFieldValue('layerid');
-            layerid = LayerStackFunctions.pre('LayerID_List')(layerid,block,'layerid','layer');
+            layerid = LayerStackFunctions.pre('LayerID_List')(layerid,block,'layerid','layerlevel');
             var material = block.getFieldValue('material');
-            material = LayerStackFunctions.pre('Material_List')(material,block,'material','layer');
+            material = LayerStackFunctions.pre('Material_List')(material,block,'material','layerlevel');
             var thickness = block.getFieldValue('thickness');
             if (thickness==='') {
-                throw new OmitedError(block,'thickness','layer');
+                throw new OmitedError(block,'thickness','layerlevel');
             }
-            thickness = LayerStackFunctions.pre('Evalstr')(thickness,block,'thickness','layer');
+            thickness = LayerStackFunctions.pre('Evalstr')(thickness,block,'thickness','layerlevel');
+            var angle = block.getFieldValue('angle');
+            if (angle==='') {
+                throw new OmitedError(block,'angle','layerlevel');
+            }
+            angle = LayerStackFunctions.pre('Evalstr')(angle,block,'angle','layerlevel');
             var layertype = block.getFieldValue('layertype');
-            layertype = LayerStackFunctions.pre('Layertype_List')(layertype,block,'layertype','layer');
+            layertype = LayerStackFunctions.pre('Layertype_List')(layertype,block,'layertype','layerlevel');
             var plane = block.getFieldValue('plane') === 'TRUE';
-            plane = LayerStackFunctions.pre('Bool')(plane,block,'plane','layer');
+            plane = LayerStackFunctions.pre('Bool')(plane,block,'plane','layerlevel');
             var basenames = block.getFieldValue('basenames');
-            basenames = LayerStackFunctions.pre('Evalstr')(basenames,block,'basenames','layer');
+            basenames = LayerStackFunctions.pre('NormalStr')(basenames,block,'basenames','layerlevel');
             var basenoplane = block.getFieldValue('basenoplane') === 'TRUE';
-            basenoplane = LayerStackFunctions.pre('Bool')(basenoplane,block,'basenoplane','layer');
-            var code = LayerStackFunctions.defaultCode('layer',eval('['+LayerStackBlocks['layer'].args.join(',')+']'),block);
+            basenoplane = LayerStackFunctions.pre('Bool')(basenoplane,block,'basenoplane','layerlevel');
+            var code = LayerStackFunctions.defaultCode('layerlevel',eval('['+LayerStackBlocks['layerlevel'].args.join(',')+']'),block);
             return code;
         },
-        "args": ["name","layerid","material","thickness","layertype","plane","basenames","basenoplane"],
-        "argsType": ["field","field","field","field","field","field","field","field"],
-        "argsGrammarName": ["IdStr","LayerID_List","Material_List","Evalstr","Layertype_List","Bool","Evalstr","Bool"],
-        "omitted": [false,false,false,false,false,false,true,false],
-        "multi": [false,false,false,false,false,false,false,false],
+        "args": ["name","layerid","material","thickness","angle","layertype","plane","basenames","basenoplane"],
+        "argsType": ["field","field","field","field","field","field","field","field","field"],
+        "argsGrammarName": ["IdStr","LayerID_List","Material_List","Evalstr","Evalstr","Layertype_List","Bool","NormalStr","Bool"],
+        "omitted": [false,false,false,false,false,false,false,true,false],
+        "multi": [false,false,false,false,false,false,false,false,false],
         "fieldDefault": function (keyOrIndex) {
-            return LayerStackFunctions.fieldDefault('layer',keyOrIndex);
+            return LayerStackFunctions.fieldDefault('layerlevel',keyOrIndex);
         },
         "menu": [],
         "xmlText": function (inputs,next,isShadow,comment,attribute) {
-            return LayerStackFunctions.xmlText('layer',inputs,next,isShadow,comment,attribute);
+            return LayerStackFunctions.xmlText('layerlevel',inputs,next,isShadow,comment,attribute);
+        }
+    },
+    "layermetanone": {
+        "type": "statement",
+        "json": {
+            "type": "layermetanone",
+            "message0": "no meta",
+            "args0": [],
+            "inputsInline": true,
+            "tooltip": "",
+            "helpUrl": "",
+            "colour": 300,
+            "previousStatement": "layermetanone",
+            "nextStatement": LayerStackBlocks.layermeta
+        },
+        "generFunc": function(block) {
+            var code = LayerStackFunctions.defaultCode('layermetanone',eval('['+LayerStackBlocks['layermetanone'].args.join(',')+']'),block);
+            return code;
+        },
+        "args": [],
+        "argsType": [],
+        "argsGrammarName": [],
+        "omitted": [],
+        "multi": [],
+        "fieldDefault": function (keyOrIndex) {
+            return LayerStackFunctions.fieldDefault('layermetanone',keyOrIndex);
+        },
+        "menu": [],
+        "xmlText": function (inputs,next,isShadow,comment,attribute) {
+            return LayerStackFunctions.xmlText('layermetanone',inputs,next,isShadow,comment,attribute);
+        }
+    },
+    "layermetacomment": {
+        "type": "statement",
+        "json": {
+            "type": "layermetacomment",
+            "message0": "注释 %1",
+            "args0": [
+                Object.assign({},LayerStackBlocks.NormalStr,{
+                    "name": "comment",
+                    "text": ""
+                })
+            ],
+            "inputsInline": true,
+            "tooltip": "",
+            "helpUrl": "",
+            "colour": 300,
+            "previousStatement": "layermetacomment",
+            "nextStatement": LayerStackBlocks.layermeta
+        },
+        "generFunc": function(block) {
+            var comment = block.getFieldValue('comment');
+            comment = LayerStackFunctions.pre('NormalStr')(comment,block,'comment','layermetacomment');
+            var code = LayerStackFunctions.defaultCode('layermetacomment',eval('['+LayerStackBlocks['layermetacomment'].args.join(',')+']'),block);
+            return code;
+        },
+        "args": ["comment"],
+        "argsType": ["field"],
+        "argsGrammarName": ["NormalStr"],
+        "omitted": [true],
+        "multi": [false],
+        "fieldDefault": function (keyOrIndex) {
+            return LayerStackFunctions.fieldDefault('layermetacomment',keyOrIndex);
+        },
+        "menu": [],
+        "xmlText": function (inputs,next,isShadow,comment,attribute) {
+            return LayerStackFunctions.xmlText('layermetacomment',inputs,next,isShadow,comment,attribute);
         }
     }
 });
@@ -548,7 +788,12 @@ var toolbox = (function(){
         "statement": [
             // 所有语句块
             LayerStackBlocks["layerstack"].xmlText(),
-            LayerStackBlocks["layer"].xmlText(),
+            LayerStackBlocks["lsvariable"].xmlText(),
+            LayerStackBlocks["lsvariablenone"].xmlText(),
+            LayerStackBlocks["layergroup"].xmlText(),
+            LayerStackBlocks["layerlevel"].xmlText(),
+            LayerStackBlocks["layermetanone"].xmlText(),
+            LayerStackBlocks["layermetacomment"].xmlText(),
         ],
         "value": [
             // 所有值块
