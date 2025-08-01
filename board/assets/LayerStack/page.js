@@ -88,18 +88,49 @@ walkerType.prototype.walklayergroup = function(layergroup){
     var uptouchlayer=obj.uptouchlayer?obj.uptouchlayer:maxname
     var downtouchlayer=obj.downtouchlayer?obj.downtouchlayer:minname
     var reverse=obj.reverse
-    return {zmax,zmin,maxname,minname,uptouchlayer,downtouchlayer,reverse}
+    var names=obj.layers.map(v=>v.name)
+    return {names,zmax,zmin,maxname,minname,uptouchlayer,downtouchlayer,reverse}
 }
 walkerType.prototype.walk = function(groups){
     this.groups=groups.map(v=>this.walklayergroup(v))
+    // then merge z values
+    var zvalue=[]
+    var zbase=[0]
+    this.groups.map(gv=>{
+        if (!gv.reverse) {
+            var {names,zmax,zmin,maxname,minname,uptouchlayer,downtouchlayer}=gv
+        }else{
+            var names=Array.from(gv.names).reverse()
+            var zheight=gv.zmax[gv.maxname]
+            var zmax={}
+            for (var key in gv.zmin) {
+                zmax[key]=zheight-gv.zmin[key]
+            }
+            var zmin={}
+            for (var key in gv.zmin) {
+                zmin[key]=zheight-gv.zmax[key]
+            }
+            var maxname=gv.minname
+            var minname=gv.maxname
+            var uptouchlayer=gv.downtouchlayer
+            var downtouchlayer=gv.uptouchlayer
+        }
+        for (var name of names) {
+            zvalue.push([name,
+                zbase[0]+zmin[name]-zmin[downtouchlayer],
+                zbase[0]+zmax[name]-zmin[downtouchlayer],
+            ])
+        }
+        zbase[0]=zbase[0]+zmax[uptouchlayer]-zmin[downtouchlayer]
+    })
+    this.zvalue=zvalue
 }
 
 window.buildHeightCall=function (params) {
     var obj=eval('('+document.querySelector('#blocklyinput').value+')')
-    var zmin={'':0}
-    var zmax={'':0}
     var walker=new walkerType()
     walker.import(obj)
-    console.log('walker,zmin,zmax',walker,zmin,zmax)
-    document.getElementById('heightinfop').innerText=JSON.stringify(['walker',[walker.vars,walker.groups],'zmin',zmin,'zmax',zmax],null,4)
+    console.log(walker)
+    console.log(walker.vars,walker.zvalue,walker.groups)
+    document.getElementById('heightinfop').innerText=JSON.stringify([walker.vars,walker.zvalue,walker.groups],null,4)
 }
