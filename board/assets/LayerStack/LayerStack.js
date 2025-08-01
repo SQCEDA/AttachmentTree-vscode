@@ -90,8 +90,8 @@ Object.assign(LayerStackBlocks,{
 
     if(globalThis?.blocklydynamiclist?.names){
         for (var [kk,vv] of globalThis.blocklydynamiclist.names) {
-            LayerStackBlocks[kk].options=vv.map(v=>[v,v])
-            LayerStackBlocks[kk].default=vv[0]
+            LayerStackBlocks[kk].options=vv.map(v=>typeof v===typeof ''?[v,v]:v)
+            LayerStackBlocks[kk].default=LayerStackBlocks[kk].options[0][1]
         }
     }
     // 所有方块的实际内容
