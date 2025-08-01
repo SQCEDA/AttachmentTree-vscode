@@ -83,10 +83,10 @@ walkerType.prototype.walklayergroup = function(layergroup){
         if(v.plane===true)lastplane[0]=v.name;
     })
     console.log('zmin,zmax',zmin,zmax)
-    var maxname=Object.entries(zmin).reduce((cindex, [key, value]) => value < zmin[cindex] ? key : cindex, Object.keys(zmin)[0]);
-    var minname=Object.entries(zmax).reduce((cindex, [key, value]) => value > zmax[cindex] ? key : cindex, Object.keys(zmax)[0]);
+    var minname=Object.entries(zmin).reduce((cindex, [key, value]) => value < zmin[cindex] ? key : cindex, Object.keys(zmin)[0]);
+    var maxname=Object.entries(zmax).reduce((cindex, [key, value]) => value > zmax[cindex] ? key : cindex, Object.keys(zmax)[0]);
     var uptouchlayer=obj.uptouchlayer?obj.uptouchlayer:maxname
-    var downtouchlayer=obj.downtouchlayer?obj.downtouchlayer:maxname
+    var downtouchlayer=obj.downtouchlayer?obj.downtouchlayer:minname
     var reverse=obj.reverse
     return {zmax,zmin,maxname,minname,uptouchlayer,downtouchlayer,reverse}
 }
