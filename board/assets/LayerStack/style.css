@@ -9,3 +9,9 @@ body {
 span.blocklyTreeLabel{
     color:black;
 }
+
+#svgoutput svg {
+    width: 100%;
+    height: auto;
+    display: block; 
+}
