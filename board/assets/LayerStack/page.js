@@ -165,9 +165,35 @@ function generateSVG(data) {
         const w = Math.max(1, (end - start) * scale);  // 最小1px宽度
         
         // 绘制柱状条
-        const color = name.startsWith('b') || name.startsWith('B') ? '#4e79a7' : 
-                     name.startsWith('t') ? '#f28e2c' : 
-                     name.startsWith('L') ? '#e15759' : '#76b7b2';
+        function getColorByFirstChar(str) {
+            if (!str || typeof str !== 'string' || str.length === 0) {
+              return '#000000'; // 默认返回黑色
+            }
+          
+            const firstChar = str.charAt(0).toLowerCase();
+            const charCode = firstChar.charCodeAt(0);
+            
+            // 使用字符的ASCII码作为随机种子，确保相同首字母总是返回相同颜色
+            const hue = (charCode * 137.508+160) % 360; // 黄金角近似值，分散颜色
+            const saturation = 70 + charCode % 30; // 饱和度 70-100%
+            const lightness = 50 + (charCode % 20) - 10 -30; // 亮度 40-60% -30
+            
+            // 将HSL转换为十六进制
+            return hslToHex(hue, saturation, lightness);
+        }
+          
+        // HSL转十六进制辅助函数
+        function hslToHex(h, s, l) {
+        l /= 100;
+        const a = s * Math.min(l, 1 - l) / 100;
+        const f = n => {
+            const k = (n + h / 30) % 12;
+            const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+            return Math.round(255 * color).toString(16).padStart(2, '0');
+        };
+        return `#${f(0)}${f(8)}${f(4)}`;
+        }
+        const color = getColorByFirstChar(name);
         
         svg += `<rect x="${x}" y="${y}" width="${w}" height="${barHeight}" fill="${color}" rx="3" />`;
         
