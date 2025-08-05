@@ -30,7 +30,8 @@ layerlevel:
     '层' layerid=LayerID_List // BGNL
     '材料' material=Material_List // BGNL
     '厚度' thickness=Evalstr // BGNL
-    '倾角' angle=Evalstr BGNL
+    '倾角' angle=Evalstr? // BGNL
+    '拓展' expansion=Evalstr? BGNL
     '类型' layertype=Layertype_List // BGNL
     '此层是整平面' plane=Bool // BGNL
     '基于层(逗号分隔)' basenames=NormalStr? // BGNL
@@ -38,7 +39,7 @@ layerlevel:
     //meta=layermeta*
 /* layerlevel
 color:70
-defaultMap:{name:'L1',thickness:100000,angle:0,plane:false,basenames:'',basenoplane:false}
+defaultMap:{name:'L1',thickness:100000,angle:0,expansion:0,plane:false,basenames:'',basenoplane:false}
 */;
 
 layermeta
@@ -50,7 +51,7 @@ defaultMap:{comment:''}
 
 statExprSplit : '=== statement ^ === expression v ===' ;
 
-Layertype_List: '堆叠'|'刻蚀'/*Layertype_List ['grow','etch']*/ ;
+Layertype_List: '堆叠'|'刻蚀'|'堆叠磨平'/*Layertype_List ['grow','etch','growplane']*/ ;
 
 Material_List: 'air'|'si'|'see_docs_to_add_more';
 

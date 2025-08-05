@@ -18,7 +18,8 @@ Object.assign(LayerStackBlocks,{
         "type": "field_dropdown",
         "options": [
             ["堆叠","grow"],
-            ["刻蚀","etch"]
+            ["刻蚀","etch"],
+            ["堆叠磨平","growplane"]
         ],
         "default": "grow"
     },
@@ -297,7 +298,7 @@ Object.assign(LayerStackBlocks,{
         "type": "statement",
         "json": {
             "type": "layerlevel",
-            "message0": "名称 %1 层 %2 材料 %3 厚度 %4 倾角 %5 %6 类型 %7 此层是整平面 %8 基于层(逗号分隔) %9 不基于整平面 %10",
+            "message0": "名称 %1 层 %2 材料 %3 厚度 %4 倾角 %5 拓展 %6 %7 类型 %8 此层是整平面 %9 基于层(逗号分隔) %10 不基于整平面 %11",
             "args0": [
                 Object.assign({},LayerStackBlocks.IdStr,{
                     "name": "name",
@@ -315,6 +316,10 @@ Object.assign(LayerStackBlocks,{
                 }),
                 Object.assign({},LayerStackBlocks.Evalstr,{
                     "name": "angle",
+                    "text": 0
+                }),
+                Object.assign({},LayerStackBlocks.Evalstr,{
+                    "name": "expansion",
                     "text": 0
                 }),
                 {
@@ -358,10 +363,9 @@ Object.assign(LayerStackBlocks,{
             }
             thickness = LayerStackFunctions.pre('Evalstr')(thickness,block,'thickness','layerlevel');
             var angle = block.getFieldValue('angle');
-            if (angle==='') {
-                throw new OmitedError(block,'angle','layerlevel');
-            }
             angle = LayerStackFunctions.pre('Evalstr')(angle,block,'angle','layerlevel');
+            var expansion = block.getFieldValue('expansion');
+            expansion = LayerStackFunctions.pre('Evalstr')(expansion,block,'expansion','layerlevel');
             var layertype = block.getFieldValue('layertype');
             layertype = LayerStackFunctions.pre('Layertype_List')(layertype,block,'layertype','layerlevel');
             var plane = block.getFieldValue('plane') === 'TRUE';
@@ -373,11 +377,11 @@ Object.assign(LayerStackBlocks,{
             var code = LayerStackFunctions.defaultCode('layerlevel',eval('['+LayerStackBlocks['layerlevel'].args.join(',')+']'),block);
             return code;
         },
-        "args": ["name","layerid","material","thickness","angle","layertype","plane","basenames","basenoplane"],
-        "argsType": ["field","field","field","field","field","field","field","field","field"],
-        "argsGrammarName": ["IdStr","LayerID_List","Material_List","Evalstr","Evalstr","Layertype_List","Bool","NormalStr","Bool"],
-        "omitted": [false,false,false,false,false,false,false,true,false],
-        "multi": [false,false,false,false,false,false,false,false,false],
+        "args": ["name","layerid","material","thickness","angle","expansion","layertype","plane","basenames","basenoplane"],
+        "argsType": ["field","field","field","field","field","field","field","field","field","field"],
+        "argsGrammarName": ["IdStr","LayerID_List","Material_List","Evalstr","Evalstr","Evalstr","Layertype_List","Bool","NormalStr","Bool"],
+        "omitted": [false,false,false,false,true,true,false,false,true,false],
+        "multi": [false,false,false,false,false,false,false,false,false,false],
         "fieldDefault": function (keyOrIndex) {
             return LayerStackFunctions.fieldDefault('layerlevel',keyOrIndex);
         },

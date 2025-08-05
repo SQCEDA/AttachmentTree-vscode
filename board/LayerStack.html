@@ -30,9 +30,16 @@
         
     </pre>
     <p style="color: black;">
+        延展: 可以只填数代表所有角度用同一个值, 也可以填[0,a,45,b]针对不同角度设置<br>
+        <br>
         整平面: 未指定时, 每一层默认堆在上一个整平面上.<br>
         不基于整平面: 只放置在指定的层上.<br>
         高度计算逻辑: zmin是基于的层的zmax中最低的, zmax是基于的层的最高的zmax加自身厚度. 对于刻蚀, zmin是基于的层的zmax中最低的减厚度, zmax是基于的层的最高的zmax减厚度<br>
+        <br>
+        基于层: 该层覆盖在哪些层上或者会在哪些层上刻蚀. 基于整平面时不用填<br>
+        <br>
+        堆叠磨平:必须是整平面也必须基于整平面, 此时填的厚度就是基于上个整平面的磨平后的厚度<br>
+        <br>
     </p>
     <script>
         globalThis.vscodenoce='ToBeReplacedByRandomToken'
